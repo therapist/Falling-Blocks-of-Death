@@ -69,8 +69,6 @@ static void Draw( void )
 {
     printf("Draw::level_tetris\n\n");
     
-    Graphics_Draw();
-    Graphics_DrawBlock( block_pos );
 }
 
 static void Free( void )
