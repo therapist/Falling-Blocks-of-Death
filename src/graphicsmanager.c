@@ -40,8 +40,8 @@ void Graphics_Resize( unsigned width, unsigned height )
     glLoadIdentity( );
 
     // set up a 2D projection
-    // rendering dimmensions are (0,0) to (10, 10) with a z-value of -1.0 to 1.0
-    gluOrtho2D( 0, 10, 0, 10 );
+    // rendering dimmensions are (0,0) to (10, 18) with a z-value of -1.0 to 1.0
+    gluOrtho2D( 0, 10, 0, 18 );
 
     // done with project settings
     glMatrixMode( GL_MODELVIEW );

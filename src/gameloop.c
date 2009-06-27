@@ -3,12 +3,13 @@
 #include "graphicsmanager.h"
 #include "gamestatemanager.h"
 #include "level_demo.h"
+#include "level_tetris.h"
 
 void GameLoop( void )
 {
-    GS_Initialize( &GS_level_demo );
-    WinMgr_Init( 800, 800 );    // set window size
-    Graphics_Init( 800, 800 );
+    GS_Initialize( &GS_level_tetris );
+    WinMgr_Init( 400, 720 );    // set window size
+    Graphics_Init( 400, 720 );
     FrameRate_Init( 30 );    // Set max frame rate
     Input_Init();
 

@@ -5,11 +5,15 @@
 #include <stdio.h>
 #include "defs.h"
 #include "string.h"
+#include "vector.h"
 
 static const int GRID_HEIGHT = 18;
 static const int GRID_WIDTH = 10;
 
-static u8 blocks[18][10];
+static u8 block_grid[18][10];
+
+static vec2_t single_block;
+static vec2_t starting_pos;
 
 static int collision( vec2_t pos )
 {
@@ -22,7 +26,7 @@ static int collision( vec2_t pos )
     || x >= GRID_WIDTH
     || y < 0
     || y >= GRID_HEIGHT
-    || ( blocks[y][x] ) )
+    || ( block_grid[y][x] ) )
         return 1;
         
     return 0;
@@ -31,12 +35,16 @@ static int collision( vec2_t pos )
 static void Load( void )
 {
     printf("Load::level_tetris\n");
+    Vec2Set( starting_pos, (GRID_WIDTH/2 - 1), (GRID_HEIGHT - 1) );
 }
 
 static void Init( void )
 {
     // clear block grid
-    memset( blocks, 0, sizeof(blocks) );
+    memset( block_grid, 0, sizeof(block_grid) );
+    
+    // set single_block at the starting position
+    Vec2Copy( single_block, starting_pos );
     
     printf("Init::level_tetris\n");
 }
@@ -56,8 +64,22 @@ static void Update( void )
 
 static void Draw( void )
 {
+    int x, y;
+    vec2_t pos;
+    
     printf("Draw::level_tetris\n\n");
     
+    // draw single block
+    Graphics_DrawBlock( single_block );
+    
+    // draw set blocks
+    for( y=0; y<GRID_HEIGHT; ++y )
+        for( x=0; x<GRID_WIDTH; ++x )
+            if( block_grid[y][x] )
+            {
+                Vec2Set( pos, x, y );
+                Graphics_DrawBlock( pos );
+            }
 }
 
 static void Free( void )
