@@ -1,4 +1,4 @@
-#include "tetris_level.h"
+#include "level_tetris.h"
 #include "frameratecontroller.h"
 #include "graphicsmanager.h"
 #include "inputmanager.h"
@@ -9,9 +9,9 @@
 static const int GRID_HEIGHT = 18;
 static const int GRID_WIDTH = 10;
 
-static u8 blocks[GRID_HEIGHT][GRID_WIDTH] = {0};
+static u8 blocks[18][10];
 
-static bool collision( vec2_t pos )
+static int collision( vec2_t pos )
 {
     static int x;
     static int y;
@@ -23,9 +23,9 @@ static bool collision( vec2_t pos )
     || y < 0
     || y >= GRID_HEIGHT
     || ( blocks[y][x] ) )
-        return true;
+        return 1;
         
-    return false;
+    return 0;
 }
 
 static void Load( void )
@@ -42,21 +42,10 @@ static void Init( void )
 }
 
 static void Update( void )
-{
-    // draw every .25 seconds
-    lasttime += frame_time;
-    if( lasttime > .25f )
-    {
-        lasttime -= .25f;
-        advance_block();
-    }
-    
-    
+{    
     printf("Update::level_tetris\n");
     printf("\tframe_time = %.04f sec\n\tlevel_time = %.04f sec\n", frame_time, level_time);
-    
-    
-    
+       
     if( KeyTriggered( KEY_r ) )
         GS_next = GS_RESTART;
     
