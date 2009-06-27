@@ -1,6 +1,7 @@
 #include "graphicsmanager.h"
 #include "GL/gl.h"
 #include "GL/glu.h"
+#include "defs.h"
 
 void Graphics_Init( unsigned width, unsigned height )
 {
@@ -84,7 +85,6 @@ void Graphics_Draw( void )
 void Graphics_DrawBlock( vec2_t pos )
 {
     glLoadIdentity();
-    glColor4f(1.0, 0.0, 1.0, 1.0 );
     glBegin( GL_TRIANGLES );      
         // REMINDER: draw vertices CCW
 
@@ -96,6 +96,16 @@ void Graphics_DrawBlock( vec2_t pos )
         glVertex2i(pos[0], pos[1]);
         glVertex2i(pos[0] + 1, pos[1]);
     glEnd();
+}
+
+void Graphics_SetColor( u32 color )
+{
+    float r, g, b, a;
+    r = color>>24;
+    g = (color>>16) & 0xff;
+    b = (color>>8) & 0xff;
+    a = color & 0xff;
+    glColor4f(r, g, b, a );
 }
 
 void Graphics_Exit( void )

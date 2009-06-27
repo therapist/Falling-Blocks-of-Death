@@ -13,6 +13,7 @@ void Graphics_EndFrame( void );
 // TODO: take a mesh object as a parameter to draw
 void Grahpics_Draw( void );
 void Graphics_DrawBlock( vec2_t pos );
+void Graphics_SetColor( u32 color );
 void Graphics_MoveCamera( void );
 
 void Graphics_Exit( void );
