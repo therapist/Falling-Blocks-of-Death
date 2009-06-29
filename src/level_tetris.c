@@ -15,6 +15,74 @@ static u8 block_grid[18][10];
 static vec2_t single_block;
 static vec2_t starting_pos;
 
+struct ShapeRotation;
+
+struct Shape
+{
+    vec2_t pos;
+    u32 color;
+    struct ShapeRotation const * shape;
+};
+
+struct ShapeRotation
+{
+    const vec2_t block[4];
+    const struct ShapeRotation const * ccw;
+    const struct ShapeRotation const * cw;
+};
+
+static const struct ShapeRotation I_0;
+static const struct ShapeRotation I_90;
+static const struct ShapeRotation I_180;
+static const struct ShapeRotation I_270;
+static const struct ShapeRotation I_0   = { {{0,0}, {0,1}, {0,2}, {0,3}}, &I_270,  &I_90 };
+static const struct ShapeRotation I_90  = { {{0,0}, {1,0}, {2,0}, {3,0}},   &I_0, &I_180 };
+static const struct ShapeRotation I_180 = { {{0,3}, {0,2}, {0,1}, {0,0}},  &I_90, &I_270 };
+static const struct ShapeRotation I_270 = { {{3,0}, {2,0}, {1,0}, {0,0}}, &I_180,   &I_0 };
+
+static const struct ShapeRotation J_0;
+static const struct ShapeRotation J_90;
+static const struct ShapeRotation J_180;
+static const struct ShapeRotation J_270;
+static const struct ShapeRotation J_0   = { {{1,2}, {1,1}, {1,0}, {0,0}}, &J_270,  &J_90 };
+static const struct ShapeRotation J_90  = { {{2,0}, {1,0}, {0,0}, {0,1}},   &J_0, &J_180 };
+static const struct ShapeRotation J_180 = { {{0,0}, {0,1}, {0,2}, {1,2}},  &J_90, &J_270 };
+static const struct ShapeRotation J_270 = { {{0,1}, {1,1}, {2,1}, {2,0}}, &J_180,   &J_0 };
+
+static const struct ShapeRotation L_0;
+static const struct ShapeRotation L_90;
+static const struct ShapeRotation L_180;
+static const struct ShapeRotation L_270;
+static const struct ShapeRotation L_0   = { {{1,0}, {1,1}, {1,2}, {0,2}}, &L_270,  &L_90 };
+static const struct ShapeRotation L_90  = { {{0,0}, {1,0}, {2,0}, {2,1}},   &L_0, &L_180 };
+static const struct ShapeRotation L_180 = { {{0,2}, {0,1}, {0,0}, {1,0}},  &L_90, &L_270 };
+static const struct ShapeRotation L_270 = { {{0,0}, {0,1}, {1,1}, {2,1}}, &L_180,   &L_0 };
+
+static struct ShapeRotation const* myShape = 0;
+
+// I J L O S T Z
+
+static void ShapeFactory( struct Shape* pShape, char type )
+{
+    switch( type )
+    {
+        case 'I':
+            break;
+        case 'J':
+            break;
+        case 'L':
+            break;
+        case 'O':
+            break;
+        case 'S':
+            break;
+        case 'T':
+            break;
+        case 'Z':
+            break;
+    }
+}
+
 static int collision( vec2_t pos )
 {
     static int x;
@@ -40,6 +108,7 @@ static void Load( void )
 
 static void Init( void )
 {
+    myShape = &J_0;
     // clear block grid
     memset( block_grid, 0, sizeof(block_grid) );
     
@@ -102,6 +171,17 @@ static void Update( void )
             Vec2Copy( single_block, new_pos );
     }
     
+    // Rotate
+    if( KeyTriggered( KEY_q ) )
+    {
+        myShape = myShape->ccw;
+    }
+    
+    if( KeyTriggered( KEY_e ) )
+    {
+        myShape = myShape->cw;
+    }
+    
     if( KeyTriggered( KEY_r ) )
         GS_next = GS_RESTART;
     
@@ -112,10 +192,16 @@ static void Update( void )
 
 static void Draw( void )
 {
+    int i;
     int x, y;
     vec2_t pos;
     
     printf("Draw::level_tetris\n\n");
+    
+    // draw myShape
+    Graphics_SetColor( 0x000000ff );
+    for( i=0; i<4; ++i )
+        Graphics_DrawBlock( myShape->block[i] );
     
     // draw single block
     Graphics_SetColor( 0xff0000ff );
