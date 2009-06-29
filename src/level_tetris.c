@@ -8,14 +8,8 @@
 #include <string.h>
 #include "vector.h"
 
-static const int GRID_HEIGHT = 18;
-static const int GRID_WIDTH = 10;
-
-static u8 block_grid[18][10];
-
-static vec2_t single_block;
-static vec2_t starting_pos;
-
+// Shape struct declarations
+struct Shape;
 struct ShapeRotation;
 
 struct Shape
@@ -32,6 +26,19 @@ struct ShapeRotation
     const struct ShapeRotation const * cw;
 };
 
+
+// globals
+static struct Shape* pShape;
+
+static const int GRID_HEIGHT = 18;
+static const int GRID_WIDTH = 10;
+
+static u8 block_grid[18][10];
+
+static vec2_t single_block;     // soon to be removed
+static vec2_t starting_pos;
+
+// I J L O S T Z
 static const struct ShapeRotation I_0;
 static const struct ShapeRotation I_90;
 static const struct ShapeRotation I_180;
@@ -59,9 +66,12 @@ static const struct ShapeRotation L_90  = { {{0,0}, {1,0}, {2,0}, {2,1}},   &L_0
 static const struct ShapeRotation L_180 = { {{0,2}, {0,1}, {0,0}, {1,0}},  &L_90, &L_270 };
 static const struct ShapeRotation L_270 = { {{0,0}, {0,1}, {1,1}, {2,1}}, &L_180,   &L_0 };
 
-static struct Shape* pShape;
 
-// I J L O S T Z
+// Shape function declarations
+static void ShapeFactory( struct Shape* pShape, char type );
+static void AddShapeToGrid( struct Shape* pShape );
+static int ShapeCollision( struct Shape * pShape );
+
 
 static void ShapeFactory( struct Shape* pShape, char type )
 {
@@ -83,8 +93,6 @@ static void ShapeFactory( struct Shape* pShape, char type )
             break;
     }
 }
-static int ShapeCollision( struct Shape * pShape );
-
 
 static void AddShapeToGrid( struct Shape* pShape )
 {
@@ -306,5 +314,5 @@ static void Unload( void )
 }
 
 // global accessor
-const struct GameState GS_level_tetris = {Load, Init, Update, Draw, Free, Unload};
+const struct GameState GS_level_tetris = { Load, Init, Update, Draw, Free, Unload };
 
