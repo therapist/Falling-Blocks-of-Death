@@ -84,6 +84,18 @@ static void ShapeFactory( struct Shape* pShape, char type )
     }
 }
 
+static void AddShapeToGrid( struct Shape* pShape )
+{
+    int i;
+    vec2_t pos;
+    
+    for( i=0; i<4; ++i )
+    {
+        Vec2Add( pos, pShape->pRotation->block[i], pShape->pos );
+        block_grid[ (int)pos[1] ][ (int)pos[0] ] = 1;
+    }
+}
+
 static int collision( vec2_t pos )
 {
     int x;
@@ -119,7 +131,7 @@ static int ShapeCollision( struct Shape * pShape )
 static void Load( void )
 {
     printf("Load::level_tetris\n");
-    Vec2Set( starting_pos, (GRID_WIDTH/2 - 1), (GRID_HEIGHT - 1) );
+    Vec2Set( starting_pos, (GRID_WIDTH/2 - 1), (GRID_HEIGHT - 5) );
     pShape = (struct Shape*) malloc( sizeof(struct Shape) );
 }
 
@@ -196,7 +208,11 @@ static void Update( void )
         Vec2Copy( old_pos, pShape->pos );
         pShape->pos[1] -= 1;
         if( ShapeCollision( pShape ) )
+        {
             Vec2Copy( pShape->pos, old_pos );
+            AddShapeToGrid( pShape );
+            Vec2Copy( pShape->pos, starting_pos );
+        }
     }
     
     // Up; debugging
