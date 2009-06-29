@@ -3,8 +3,9 @@
 #include "graphicsmanager.h"
 #include "inputmanager.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "defs.h"
-#include "string.h"
+#include <string.h>
 #include "vector.h"
 
 static const int GRID_HEIGHT = 18;
@@ -21,7 +22,7 @@ struct Shape
 {
     vec2_t pos;
     u32 color;
-    struct ShapeRotation const * shape;
+    struct ShapeRotation const * pRotation;
 };
 
 struct ShapeRotation
@@ -58,7 +59,7 @@ static const struct ShapeRotation L_90  = { {{0,0}, {1,0}, {2,0}, {2,1}},   &L_0
 static const struct ShapeRotation L_180 = { {{0,2}, {0,1}, {0,0}, {1,0}},  &L_90, &L_270 };
 static const struct ShapeRotation L_270 = { {{0,0}, {0,1}, {1,1}, {2,1}}, &L_180,   &L_0 };
 
-static struct ShapeRotation const* myShape = 0;
+static struct Shape* pShape;
 
 // I J L O S T Z
 
@@ -85,8 +86,8 @@ static void ShapeFactory( struct Shape* pShape, char type )
 
 static int collision( vec2_t pos )
 {
-    static int x;
-    static int y;
+    int x;
+    int y;
     x = pos[0];
     y = pos[1];
     
@@ -100,15 +101,34 @@ static int collision( vec2_t pos )
     return 0;
 }
 
+static int ShapeCollision( struct Shape * pShape )
+{
+    int i;
+    vec2_t block_pos;
+    
+    for( i=0; i<4; ++i )
+    {
+        Vec2Add( block_pos, pShape->pRotation->block[i], pShape->pos );
+        if( collision( block_pos ) )
+            return 1;
+    }
+    
+    return 0;
+}
+
 static void Load( void )
 {
     printf("Load::level_tetris\n");
     Vec2Set( starting_pos, (GRID_WIDTH/2 - 1), (GRID_HEIGHT - 1) );
+    pShape = (struct Shape*) malloc( sizeof(struct Shape) );
 }
 
 static void Init( void )
 {
-    myShape = &J_0;
+    pShape->color = 0x0000ffff;
+    Vec2Set( pShape->pos, 4, 4 );
+    pShape->pRotation = &L_0;
+    
     // clear block grid
     memset( block_grid, 0, sizeof(block_grid) );
     
@@ -130,7 +150,9 @@ static void Init( void )
 
 static void Update( void )
 {    
-    static vec2_t new_pos;
+    int i;
+    vec2_t new_pos;
+    vec2_t old_pos;
     
     printf("Update::level_tetris\n");
     printf("\tframe_time = %.04f sec\n\tlevel_time = %.04f sec\n", frame_time, level_time);
@@ -142,6 +164,11 @@ static void Update( void )
         new_pos[0] -= 1;
         if( !collision( new_pos ) )
             Vec2Copy( single_block, new_pos );
+        
+        Vec2Copy( old_pos, pShape->pos );
+        pShape->pos[0] -= 1;
+        if( ShapeCollision( pShape ) )
+            Vec2Copy( pShape->pos, old_pos );
     }
     
     // Right
@@ -151,6 +178,11 @@ static void Update( void )
         new_pos[0] += 1;
         if( !collision( new_pos ) )
             Vec2Copy( single_block, new_pos );
+        
+        Vec2Copy( old_pos, pShape->pos );
+        pShape->pos[0] += 1;
+        if( ShapeCollision( pShape ) )
+            Vec2Copy( pShape->pos, old_pos );
     }
     
     // Down
@@ -160,6 +192,11 @@ static void Update( void )
         new_pos[1] -= 1;
         if( !collision( new_pos ) )
             Vec2Copy( single_block, new_pos );
+        
+        Vec2Copy( old_pos, pShape->pos );
+        pShape->pos[1] -= 1;
+        if( ShapeCollision( pShape ) )
+            Vec2Copy( pShape->pos, old_pos );
     }
     
     // Up; debugging
@@ -169,17 +206,30 @@ static void Update( void )
         new_pos[1] += 1;
         if( !collision( new_pos ) )
             Vec2Copy( single_block, new_pos );
+        
+        Vec2Copy( old_pos, pShape->pos );
+        pShape->pos[1] += 1;
+        if( ShapeCollision( pShape ) )
+            Vec2Copy( pShape->pos, old_pos );
     }
     
     // Rotate
     if( KeyTriggered( KEY_q ) )
     {
-        myShape = myShape->ccw;
+        struct ShapeRotation const * old_rot = pShape->pRotation;
+        pShape->pRotation = pShape->pRotation->ccw;
+        
+        if( ShapeCollision( pShape ) )
+            pShape->pRotation = old_rot;
     }
     
     if( KeyTriggered( KEY_e ) )
     {
-        myShape = myShape->cw;
+        struct ShapeRotation const * old_rot = pShape->pRotation;
+        pShape->pRotation = pShape->pRotation->cw;
+        
+        if( ShapeCollision( pShape ) )
+            pShape->pRotation = old_rot;
     }
     
     if( KeyTriggered( KEY_r ) )
@@ -198,10 +248,14 @@ static void Draw( void )
     
     printf("Draw::level_tetris\n\n");
     
-    // draw myShape
-    Graphics_SetColor( 0x000000ff );
+    // draw pShape
+    Graphics_SetColor( pShape->color );
     for( i=0; i<4; ++i )
-        Graphics_DrawBlock( myShape->block[i] );
+    {
+        Vec2Copy( pos, pShape->pRotation->block[i] );
+        Vec2Add( pos, pos, pShape->pos );
+        Graphics_DrawBlock( pos );
+    }
     
     // draw single block
     Graphics_SetColor( 0xff0000ff );
@@ -226,6 +280,7 @@ static void Free( void )
 static void Unload( void )
 {
     printf("Unload::level_tetris\n");
+    free(pShape);
 }
 
 // global accessor
