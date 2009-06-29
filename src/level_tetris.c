@@ -83,11 +83,17 @@ static void ShapeFactory( struct Shape* pShape, char type )
             break;
     }
 }
+static int ShapeCollision( struct Shape * pShape );
+
 
 static void AddShapeToGrid( struct Shape* pShape )
 {
     int i;
     vec2_t pos;
+    
+    // don't add if shape is out of bounds
+    if( ShapeCollision( pShape ) )
+        return;
     
     for( i=0; i<4; ++i )
     {
