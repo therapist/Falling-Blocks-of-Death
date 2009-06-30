@@ -38,6 +38,8 @@ static u8 block_grid[18][10];
 static vec2_t single_block;     // soon to be removed
 static vec2_t starting_pos;
 
+static int score;
+
 // I J L O S T Z
 static const struct ShapeRotation I_0;
 static const struct ShapeRotation I_90;
@@ -142,10 +144,11 @@ static int ShapeCollision( struct Shape * pShape )
     return 0;
 }
 
-static void LineRemoval( void )
+static int RemoveLines( void )
 {
     static u8 complete[10] = { 1,1,1,1,1,1,1,1,1,1 };
     int i, j;
+    int num_lines = 0;
     
     for( i=0; i<GRID_HEIGHT; ++i )
     {
@@ -155,10 +158,11 @@ static void LineRemoval( void )
             {
                 memcpy( block_grid[j], block_grid[j+1], sizeof( block_grid[0] ) );
             }
+            ++num_lines;
             --i;    // start checking at the same line
         }
     }
-    
+    return num_lines;
 }
 
 static void Load( void )
@@ -173,6 +177,9 @@ static void Init( void )
     pShape->color = 0x0000ffff;
     Vec2Set( pShape->pos, 4, 4 );
     pShape->pRotation = &I_0;
+    
+    // reset score
+    score = 0;
     
     // clear block grid
     memset( block_grid, 0, sizeof( block_grid ) );
@@ -200,7 +207,10 @@ static void Update( void )
     vec2_t old_pos;
     
     printf("Update::level_tetris\n");
-    printf("\tframe_time = %.04f sec\n\tlevel_time = %.04f sec\n", frame_time, level_time);
+    printf("\tframe_time = %.04f sec\n" \
+           "\tlevel_time = %.04f sec\n" \
+           "\t     score = %i lines\n",
+           frame_time, level_time, score);
     
     // Left
     if( KeyTriggered( KEY_a ) )
@@ -244,7 +254,7 @@ static void Update( void )
         {
             Vec2Copy( pShape->pos, old_pos );
             AddShapeToGrid( pShape );
-            LineRemoval();
+            score += RemoveLines();
             Vec2Copy( pShape->pos, starting_pos );
         }
     }
