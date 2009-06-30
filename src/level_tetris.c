@@ -142,18 +142,37 @@ static int ShapeCollision( struct Shape * pShape )
     return 0;
 }
 
+static void LineRemoval( void )
+{
+    static u8 complete[10] = { 1,1,1,1,1,1,1,1,1,1 };
+    int i, j;
+    
+    for( i=0; i<GRID_HEIGHT; ++i )
+    {
+        if( memcmp( block_grid[i], complete, sizeof( block_grid[0] ) ) == 0 )
+        {
+            for( j=i; j<(GRID_HEIGHT - 1); ++j )
+            {
+                memcpy( block_grid[j], block_grid[j+1], sizeof( block_grid[0] ) );
+            }
+            --i;    // start checking at the same line
+        }
+    }
+    
+}
+
 static void Load( void )
 {
     printf("Load::level_tetris\n");
     Vec2Set( starting_pos, (GRID_WIDTH/2 - 1), (GRID_HEIGHT - 5) );
-    pShape = (struct Shape*) malloc( sizeof(struct Shape) );
+    pShape = (struct Shape*) malloc( sizeof( struct Shape ) );
 }
 
 static void Init( void )
 {
     pShape->color = 0x0000ffff;
     Vec2Set( pShape->pos, 4, 4 );
-    pShape->pRotation = &L_0;
+    pShape->pRotation = &I_0;
     
     // clear block grid
     memset( block_grid, 0, sizeof(block_grid) );
@@ -225,6 +244,7 @@ static void Update( void )
         {
             Vec2Copy( pShape->pos, old_pos );
             AddShapeToGrid( pShape );
+            LineRemoval();
             Vec2Copy( pShape->pos, starting_pos );
         }
     }
