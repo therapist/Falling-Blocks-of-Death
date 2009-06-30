@@ -68,6 +68,42 @@ static const struct ShapeRotation L_90  = { {{0,0}, {1,0}, {2,0}, {2,1}},   &L_0
 static const struct ShapeRotation L_180 = { {{0,2}, {0,1}, {0,0}, {1,0}},  &L_90, &L_270 };
 static const struct ShapeRotation L_270 = { {{0,0}, {0,1}, {1,1}, {2,1}}, &L_180,   &L_0 };
 
+static const struct ShapeRotation O_0;
+static const struct ShapeRotation O_90;
+static const struct ShapeRotation O_180;
+static const struct ShapeRotation O_270;
+static const struct ShapeRotation O_0   = { {{0,0}, {0,1}, {1,1}, {1,0}}, &O_270,  &O_90 };
+static const struct ShapeRotation O_90  = { {{0,1}, {1,1}, {1,0}, {0,0}},   &O_0, &O_180 };
+static const struct ShapeRotation O_180 = { {{1,1}, {1,0}, {0,0}, {1,0}},  &O_90, &O_270 };
+static const struct ShapeRotation O_270 = { {{0,1}, {0,0}, {1,0}, {1,1}}, &O_180,   &O_0 };
+
+static const struct ShapeRotation S_0;
+static const struct ShapeRotation S_90;
+static const struct ShapeRotation S_180;
+static const struct ShapeRotation S_270;
+static const struct ShapeRotation S_0   = { {{1,0}, {1,1}, {0,1}, {0,2}}, &S_270,  &S_90 };
+static const struct ShapeRotation S_90  = { {{0,0}, {1,0}, {1,1}, {2,1}},   &S_0, &S_180 };
+static const struct ShapeRotation S_180 = { {{0,2}, {0,1}, {1,1}, {1,0}},  &S_90, &S_270 };
+static const struct ShapeRotation S_270 = { {{2,1}, {1,1}, {1,0}, {0,0}}, &S_180,   &S_0 };
+
+static const struct ShapeRotation T_0;
+static const struct ShapeRotation T_90;
+static const struct ShapeRotation T_180;
+static const struct ShapeRotation T_270;
+static const struct ShapeRotation T_0   = { {{0,1}, {1,0}, {1,1}, {1,2}}, &T_270,  &T_90 };
+static const struct ShapeRotation T_90  = { {{1,1}, {0,0}, {1,0}, {2,0}},   &T_0, &T_180 };
+static const struct ShapeRotation T_180 = { {{1,1}, {0,2}, {0,1}, {0,0}},  &T_90, &T_270 };
+static const struct ShapeRotation T_270 = { {{1,0}, {2,1}, {1,1}, {0,1}}, &T_180,   &T_0 };
+
+static const struct ShapeRotation Z_0;
+static const struct ShapeRotation Z_90;
+static const struct ShapeRotation Z_180;
+static const struct ShapeRotation Z_270;
+static const struct ShapeRotation Z_0   = { {{0,0}, {0,1}, {1,1}, {1,2}}, &Z_270,  &Z_90 };
+static const struct ShapeRotation Z_90  = { {{0,1}, {1,1}, {1,0}, {2,0}},   &Z_0, &Z_180 };
+static const struct ShapeRotation Z_180 = { {{1,2}, {1,1}, {0,1}, {0,0}},  &Z_90, &Z_270 };
+static const struct ShapeRotation Z_270 = { {{2,0}, {1,0}, {1,1}, {0,1}}, &Z_180,   &Z_0 };
+
 
 // Shape function declarations
 static void ShapeFactory( struct Shape* pShape, char type );
