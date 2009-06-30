@@ -4,6 +4,7 @@
 #include "inputmanager.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "defs.h"
 #include <string.h>
 #include "vector.h"
@@ -106,30 +107,38 @@ static const struct ShapeRotation Z_270 = { {{2,0}, {1,0}, {1,1}, {0,1}}, &Z_180
 
 
 // Shape function declarations
-static void ShapeFactory( struct Shape* pShape, char type );
+static void ShapeFactory( struct Shape* pShape );
 static void AddShapeToGrid( struct Shape* pShape );
 static int ShapeCollision( struct Shape * pShape );
 
 
-static void ShapeFactory( struct Shape* pShape, char type )
+static void ShapeFactory( struct Shape* pShape )
 {
-    switch( type )
+    switch( rand() % 7 )
     {
-        case 'I':
+        case 0:
+            pShape->pRotation = &I_0;
             break;
-        case 'J':
+        case 1:
+            pShape->pRotation = &J_0;
             break;
-        case 'L':
+        case 2:
+            pShape->pRotation = &L_0;
             break;
-        case 'O':
+        case 3:
+            pShape->pRotation = &O_0;
             break;
-        case 'S':
+        case 4:
+            pShape->pRotation = &S_0;
             break;
-        case 'T':
+        case 5:
+            pShape->pRotation = &T_0;
             break;
-        case 'Z':
+        case 6:
+            pShape->pRotation = &Z_0;
             break;
     }
+    Vec2Copy( pShape->pos, starting_pos );
 }
 
 static void AddShapeToGrid( struct Shape* pShape )
@@ -212,7 +221,9 @@ static void Init( void )
 {
     pShape->color = 0x0000ffff;
     Vec2Set( pShape->pos, 4, 4 );
-    pShape->pRotation = &I_0;
+    pShape->pRotation = &Z_0;
+    
+    srand ( time(NULL) );
     
     // reset score
     score = 0;
@@ -291,7 +302,7 @@ static void Update( void )
             Vec2Copy( pShape->pos, old_pos );
             AddShapeToGrid( pShape );
             score += RemoveLines();
-            Vec2Copy( pShape->pos, starting_pos );
+            ShapeFactory( pShape );
         }
     }
     
