@@ -175,7 +175,7 @@ static void Init( void )
     pShape->pRotation = &I_0;
     
     // clear block grid
-    memset( block_grid, 0, sizeof(block_grid) );
+    memset( block_grid, 0, sizeof( block_grid ) );
     
     // set single_block at the starting position
     Vec2Copy( single_block, starting_pos );
@@ -185,10 +185,10 @@ static void Init( void )
     u8 line2[10] = {0,0,0,0,0,1,0,0,1,0};
     u8 line1[10] = {0,0,1,0,1,1,1,1,1,0};
     u8 line0[10] = {0,1,1,1,1,0,1,1,1,0};
-    memcpy( block_grid[3], line3, sizeof(line3) );
-    memcpy( block_grid[2], line2, sizeof(line2) );
-    memcpy( block_grid[1], line1, sizeof(line1) );
-    memcpy( block_grid[0], line0, sizeof(line0) );
+    memcpy( block_grid[3], line3, sizeof( line3 ) );
+    memcpy( block_grid[2], line2, sizeof( line2 ) );
+    memcpy( block_grid[1], line1, sizeof( line1 ) );
+    memcpy( block_grid[0], line0, sizeof( line0 ) );
     
     printf("Init::level_tetris\n");
 }
