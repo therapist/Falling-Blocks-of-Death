@@ -190,13 +190,13 @@ static int ShapeCollision( struct Shape * pShape )
 
 static int RemoveLines( void )
 {
-    static u8 complete[10] = { 1,1,1,1,1,1,1,1,1,1 };
+    static u8 complete_line[10] = { 1,1,1,1,1,1,1,1,1,1 };
     int i, j;
     int num_lines = 0;
     
     for( i=0; i<GRID_HEIGHT; ++i )
     {
-        if( memcmp( block_grid[i], complete, sizeof( block_grid[0] ) ) == 0 )
+        if( memcmp( block_grid[i], complete_line, sizeof( block_grid[0] ) ) == 0 )
         {
             for( j=i; j<(GRID_HEIGHT - 1); ++j )
             {
