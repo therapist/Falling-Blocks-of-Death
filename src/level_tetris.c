@@ -36,7 +36,6 @@ static const int GRID_WIDTH = 10;
 
 static u8 block_grid[18][10];
 
-static vec2_t single_block;     // soon to be removed
 static vec2_t starting_pos;
 
 static int score;
@@ -231,9 +230,6 @@ static void Init( void )
     // clear block grid
     memset( block_grid, 0, sizeof( block_grid ) );
     
-    // set single_block at the starting position
-    Vec2Copy( single_block, starting_pos );
-    
     // add some starting blocks for debugging
     u8 line3[10] = {0,0,0,0,0,0,0,0,1,0};
     u8 line2[10] = {0,0,0,0,0,1,0,0,1,0};
@@ -262,11 +258,6 @@ static void Update( void )
     // Left
     if( KeyTriggered( KEY_a ) )
     {
-        Vec2Copy( new_pos, single_block );
-        new_pos[0] -= 1;
-        if( !collision( new_pos ) )
-            Vec2Copy( single_block, new_pos );
-        
         Vec2Copy( old_pos, pShape->pos );
         pShape->pos[0] -= 1;
         if( ShapeCollision( pShape ) )
@@ -276,11 +267,6 @@ static void Update( void )
     // Right
     if( KeyTriggered( KEY_d ) )
     {
-        Vec2Copy( new_pos, single_block );
-        new_pos[0] += 1;
-        if( !collision( new_pos ) )
-            Vec2Copy( single_block, new_pos );
-        
         Vec2Copy( old_pos, pShape->pos );
         pShape->pos[0] += 1;
         if( ShapeCollision( pShape ) )
@@ -290,11 +276,6 @@ static void Update( void )
     // Down
     if( KeyTriggered( KEY_s ) )
     {
-        Vec2Copy( new_pos, single_block );
-        new_pos[1] -= 1;
-        if( !collision( new_pos ) )
-            Vec2Copy( single_block, new_pos );
-        
         Vec2Copy( old_pos, pShape->pos );
         pShape->pos[1] -= 1;
         if( ShapeCollision( pShape ) )
@@ -309,11 +290,6 @@ static void Update( void )
     // Up; debugging
     if( KeyTriggered( KEY_w ) )
     {
-        Vec2Copy( new_pos, single_block );
-        new_pos[1] += 1;
-        if( !collision( new_pos ) )
-            Vec2Copy( single_block, new_pos );
-        
         Vec2Copy( old_pos, pShape->pos );
         pShape->pos[1] += 1;
         if( ShapeCollision( pShape ) )
@@ -363,10 +339,6 @@ static void Draw( void )
         Vec2Add( pos, pos, pShape->pos );
         Graphics_DrawBlock( pos );
     }
-    
-    // draw single block
-    Graphics_SetColor( 0xff0000ff );
-    Graphics_DrawBlock( single_block );
     
     // draw set blocks
     Graphics_SetColor( 0xff00ffff );
