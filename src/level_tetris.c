@@ -40,6 +40,9 @@ static vec2_t starting_pos;
 
 static int score;
 
+static float drop_timer;
+static float drop_speed;
+
 // I J L O S T Z
 static const struct ShapeRotation I_0;
 static const struct ShapeRotation I_90;
@@ -224,6 +227,9 @@ static void Init( void )
     
     srand ( time(NULL) );
     
+    drop_timer = 0.;
+    drop_speed = 0.5;
+    
     // reset score
     score = 0;
     
@@ -244,16 +250,39 @@ static void Init( void )
 }
 
 static void Update( void )
-{    
+{
     int i;
     vec2_t new_pos;
     vec2_t old_pos;
+    int drop = 0;
+    
+    drop_timer += frame_time;
+    while( drop_timer > drop_speed )
+    {
+        drop += 1;
+        drop_timer -= drop_speed;
+    }
     
     printf("Update::level_tetris\n");
     printf("\tframe_time = %.04f sec\n" \
            "\tlevel_time = %.04f sec\n" \
            "\t     score = %i lines\n",
            frame_time, level_time, score);
+    
+    // autodrop
+    while( drop-- )
+    {
+        Vec2Copy( old_pos, pShape->pos );
+        pShape->pos[1] -= 1;
+        if( ShapeCollision( pShape ) )
+        {
+            Vec2Copy( pShape->pos, old_pos );
+            AddShapeToGrid( pShape );
+            score += RemoveLines();
+            ShapeFactory( pShape );
+        }
+    }
+    
     
     // Left
     if( KeyTriggered( KEY_a ) )
