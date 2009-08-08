@@ -156,7 +156,7 @@ const struct ShapeRotation O_180;
 const struct ShapeRotation O_270;
 const struct ShapeRotation O_0   = { {{0,0}, {0,1}, {1,1}, {1,0}}, &O_270,  &O_90 };
 const struct ShapeRotation O_90  = { {{0,1}, {1,1}, {1,0}, {0,0}},   &O_0, &O_180 };
-const struct ShapeRotation O_180 = { {{1,1}, {1,0}, {0,0}, {1,0}},  &O_90, &O_270 };
+const struct ShapeRotation O_180 = { {{1,1}, {1,0}, {0,0}, {0,1}},  &O_90, &O_270 };
 const struct ShapeRotation O_270 = { {{0,1}, {0,0}, {1,0}, {1,1}}, &O_180,   &O_0 };
 
 const struct ShapeRotation S_0;
